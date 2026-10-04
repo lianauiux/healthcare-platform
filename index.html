@@ -1,0 +1,86 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corvina Health Platform</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="shell.css?v=1">
+<link rel="stylesheet" href="base.css?v=1">
+<link rel="stylesheet" href="app.css?v=65">
+
+<div class="app">
+  <nav class="nav" aria-label="Primary">
+    <div class="brand-wrap">
+      <button class="brand" data-menu="#brandPop" aria-expanded="false" aria-haspopup="menu"><span class="brand-logo"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" class="lg-bg"/><path class="lg-x" d="M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z"/><path class="lg-arc" d="M9 24.5c3.2 2.6 10.8 2.6 14 0"/></svg></span><div class="brand-text"><div class="brand-name" id="brandName">Corvina General Hospital</div></div></button>
+      <div class="pop" id="brandPop" role="menu"><div class="grp">Facilities</div><div id="facList"></div><div class="sep"></div><button class="it" role="menuitem" data-stub>Add Facility</button></div>
+    </div>
+
+    <div class="nav-group nav-top">
+      <a href="#/dashboard" data-route="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a>
+      <a href="#/patients" data-route="patients"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.6 3.5-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.8 3 2.5 3.5 5.2"/></svg>Patients</a>
+      <a href="#/appointments" data-route="appointments"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M8 14h3v3H8z"/></svg>Appointments<span class="badge" id="bdgWait"></span></a>
+      <a href="#/homevisits" data-route="homevisits"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Home Visits</a>
+      <a href="#/prescriptions" data-route="prescriptions"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v6h6M9 12h3a2 2 0 0 1 0 4H9v-4zM9 16v3M12 16l3 3"/></svg>Prescriptions<span class="badge" id="bdgRx"></span></a>
+      <a href="#/diagnostics" data-route="diagnostics"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4.5 19a1.5 1.5 0 0 0 1.3 2h12.4a1.5 1.5 0 0 0 1.3-2L14 9V3"/><path d="M7 15h10"/></svg>Diagnostics<span class="badge" id="bdgDx"></span></a>
+      <a href="#/admissions" data-route="admissions"><svg viewBox="0 0 24 24"><path d="M3 18V7M3 14h18v4M21 14v-3a3 3 0 0 0-3-3h-7v6"/><circle cx="7" cy="11" r="1.6"/></svg>Admissions<span class="badge" id="bdgAdm"></span></a>
+      <a href="#/clinical" data-route="clinical"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.3-9.2C1.4 8.3 3.6 5 7 5c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.3 4.3 6.8C19.5 16.4 12 21 12 21z"/></svg>Clinical Care</a>
+      <a href="#/medications" data-route="medications"><svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="6" rx="3" transform="rotate(-45 12 12)"/><path d="M9 9l6 6"/></svg>Medications<span class="badge" id="bdgMed"></span></a>
+    </div>
+
+    <div class="nav-group" data-sec="org">
+      <button class="nav-h" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M12 9v6M9 12h6"/></svg>Organization<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div class="nav-items">
+        <a href="#/facilities" data-route="facilities">Facilities &amp; Departments</a>
+        <a href="#/staff" data-route="staff">Staff</a>
+      </div>
+    </div>
+    <div class="nav-group" data-sec="mgmt">
+      <button class="nav-h" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Management<svg class="chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <div class="nav-items">
+        <a href="#/analytics" data-route="analytics">Analytics &amp; Reports</a>
+        <a href="#/admin" data-route="admin">Administration</a>
+      </div>
+    </div>
+
+    <div class="nav-group nav-foot">
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.7M12 17h.01"/></svg>Help</a>
+      <div class="nav-sep"></div>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M15 8l4 4-4 4M19 12H9"/></svg>Log Out</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn nav-toggle" id="navToggle" aria-label="Collapse Sidebar" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+      <div class="grow"></div>
+      <div class="seg lang-seg" role="tablist" id="langSeg" aria-label="Language"><button role="tab" data-lang="en" aria-selected="true">EN</button><button role="tab" data-lang="uk" aria-selected="false">UA</button></div>
+      <button class="icon-btn" aria-label="Notifications, 4 unread"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="dot">4</span></button>
+      <div class="menu-wrap">
+        <button class="avatar role-btn" data-menu="#rolePop" aria-expanded="false"><span class="pic" id="uPic"></span><span class="who"><b id="uName"></b><span id="uRole"></span></span><svg class="chev-s" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="pop right" id="rolePop" role="menu" style="width:280px"><div class="grp">View the platform as</div><div id="roleList"></div><div class="sep"></div><div class="grp" style="white-space:normal">Navigation and data change with the role. Hidden modules are not available to that role.</div></div>
+      </div>
+    </header>
+    <div id="view" class="view"></div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Details">
+  <div class="d-head"><div class="grow"><div class="eyebrow" id="dEyebrow"></div><h2 id="dTitle"></h2></div><button class="x" data-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="d-body" id="dBody"></div>
+  <div class="d-foot" id="dFoot"></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg><span id="toastMsg"></span></div>
+
+<script src="shell.js?v=1"></script>
+<script src="charts.js?v=1"></script>
+<script src="data.js?v=25"></script>
+<script src="core.js?v=13"></script>
+<script src="views-core.js?v=57"></script>
+<script src="views-care.js?v=11"></script>
+<script src="views-org.js?v=2"></script>
+<script src="views-family.js?v=48"></script>
+<script src="views-visit.js?v=7"></script>
+<script src="i18n.js?v=11"></script>
+<script>App.start(); I18N.start();</script>
