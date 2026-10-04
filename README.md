@@ -2,7 +2,12 @@
 
 A clickable prototype of a healthcare management platform, designed by Liana Maiatska.
 
-**Live demo:** https://lianauiux.github.io/healthcare-platform/
+## Live demo
+
+Two versions of the same prototype, to compare:
+
+- **Version A, static:** https://lianauiux.github.io/healthcare-platform/
+- **Version B, with loading states and motion:** https://lianauiux.github.io/healthcare-platform/b/
 
 > Concept project. The clinic ("Corvina General Hospital"), patients, staff and all data are fictional.
 
