@@ -238,7 +238,7 @@ App.prescribe=function(p0,{onBack,onDone}={}){
     D.RX.unshift({pid:p.id,order:`${m.drug} ${m.dose} ${m.route} · ${m.freq} · ${$s('#rxDays').value}`,doc:'marsh',status:'Sent to Pharmacy',warn:check()[0]==='warn'?check()[1]:''});
     D.ORX.unshift({id:'RX-'+(52500+D.ORX.length),date:'29 Sep',pid:p.id,f,qty:30,status:'Sent',price:D.priceOf(f,p),refills:+$s('#rxRef').value,pharmacy:$s('#rxPh').value,fresh:true});
     UI.toast(`${m.drug} ${m.dose} sent to ${$s('#rxPh').value.split(' · ')[0]} · ${p.name} gets an SMS when it's ready`);
-    onDone?onDone():App.closeDrawer(); App.render(); };
+    App.closeDrawer(); onDone&&onDone(); App.render(); };
   info(); sync(); if(p0) setTimeout(()=>search.focus(),60);
 };
 
