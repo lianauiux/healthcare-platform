@@ -57,7 +57,7 @@ const can=m=>role().mods.includes(m);
 /* ---------- drawer ---------- */
 function drawer({eyebrow='',title='',body='',foot='',wide=false}){
   $('#dEyebrow').innerHTML=eyebrow; $('#dTitle').textContent=title; $('#dBody').innerHTML=body; $('#dFoot').innerHTML=foot;
-  $('#drawer').classList.toggle('wide',wide); $('#dFoot').hidden=!foot; const db=$('#dBody'); db.classList.remove('d-enter'); void db.offsetWidth; db.classList.add('d-enter'); UI.drawer('#drawer',true); return $('#drawer');
+  $('#drawer').classList.toggle('wide',wide); $('#dFoot').hidden=!foot; UI.drawer('#drawer',true); return $('#drawer');
 }
 const closeDrawer=()=>UI.drawer('#drawer',false);
 
@@ -92,40 +92,12 @@ document.addEventListener('click',e=>{
 const views={};
 let current=null, curView=null, curKey=null;
 function route(){ const parts=(location.hash.replace(/^#\/?/,'')||role().home||'dashboard').split('/'); return {name:parts[0],arg:parts[1]}; }
-/* Skeleton shown while a page "loads": same layout as the page, shimmering placeholders */
-const SK=(w,h=12,r=6)=>`<span class="sk" style="width:${w};height:${h}px;border-radius:${r}px"></span>`;
-function skeleton(name){
-  const rows=n=>Array.from({length:n},(_,i)=>`<div class="sk-row">${SK('56px')}<span class="sk sk-av"></span><span class="sk-col">${SK((45+(i*37)%40)+'%')}${SK('28%',10)}</span>${SK((35+(i*23)%40)+'%')}${SK('76px',28,6)}</div>`).join('');
-  const table=`<div class="sk-bar">${SK('280px',32,8)}${SK('210px',32,8)}</div><div class="sk-card">${rows(8)}</div>`;
-  const dash=`<div class="sk-tiles">${Array.from({length:4},()=>`<div class="sk-card sk-tile">${SK('55%',10)}${SK('35%',26)}</div>`).join('')}</div><div class="sk-two"><div class="sk-card">${rows(5)}</div><div class="sk-card">${rows(5)}</div></div>`;
-  const split=`<div class="sk-split"><div class="sk-card">${rows(7)}</div><div class="sk-card">${rows(4)}</div></div>`;
-  return `<div class="page-head"><div class="row1">${SK('190px',24)}<div class="actions">${SK('120px',34,8)}${SK('150px',34,8)}</div></div></div>
-    <div class="page-body">${{dashboard:dash,patient:split,visit:split,clinical:split}[name]||table}</div>`;
-}
-let loadTok=0, firstPaint=true;
 function render(){
   const r=route(); let name=r.name;
   const MOD={patient:'patients',visit:'appointments'};
   if(!views[name]||!can(MOD[name]||name)){ if(location.hash!=='#/dashboard'){ location.hash='#/dashboard'; return; } name='dashboard'; }
   const key=name+'/'+(r.arg||'')+'/'+S.role+'/'+S.fac;
   if(!current||curKey!==key){ const fresh=document.createElement('div'); fresh.id='view'; fresh.className='view'; (current||$('#view')).replaceWith(fresh); current=fresh; if(curKey&&curKey.split('/')[0]!==name) window.scrollTo(0,0); }
-  if(curKey!==key){
-    /* a new page: show its skeleton first, then paint the real content */
-    curKey=key; curView=null; current.innerHTML=skeleton(name); current.setAttribute('aria-busy','true');
-    markNav(MOD[name]||name); renderChrome();
-    const tok=++loadTok, el=current, wait=firstPaint?560:340; firstPaint=false;
-    setTimeout(()=>{ if(tok===loadTok&&el===current) paint(r,name,key,true); },wait);
-    return;
-  }
-  paint(r,name,key,false);
-}
-function markNav(nav){
-  $$('.nav a[data-route]').forEach(a=>{ a.dataset.route===nav?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'); });
-  $$('.nav-group[data-sec]').forEach(g=>{ const has=!!g.querySelector('[aria-current]'); g.classList.toggle('has-current',has); if(has) g.querySelector('.nav-h').setAttribute('aria-expanded','true'); });
-}
-function paint(r,name,key,enter){
-  loadTok++;
-  const MOD={patient:'patients',visit:'appointments'};
   curKey=key; curView=views[name](r.arg,current);
   const v=curView;
   current.innerHTML=`<div class="page-head"><div class="row1">${v.back?`<a class="back" href="${v.back}" aria-label="Back">${ic('back')}</a>`:''}<h1>${esc(v.title)}</h1><div class="actions">${v.actions||''}</div></div>
@@ -138,8 +110,6 @@ function paint(r,name,key,enter){
   renderChrome();
   if(v.draw) v.draw(current);
   if(v.bind&&!current.bound){ current.bound=true; v.bind(current); }
-  current.removeAttribute('aria-busy');
-  if(enter){ const el=current; el.classList.add('enter'); setTimeout(()=>el.classList.remove('enter'),700); }
 }
 window.addEventListener('hashchange',render);
 let rt; window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(curView&&curView.draw) curView.draw(current); },120); });
@@ -151,13 +121,6 @@ try{ localStorage.removeItem('hcp.theme'); }catch(e){}
 document.addEventListener('click',e=>{ if(!e.target.closest('#themeBtn')) return; const d=document.documentElement.getAttribute('data-theme'); const dark=d==='dark'||(!d&&matchMedia('(prefers-color-scheme: dark)').matches); const t=dark?'light':'dark'; applyTheme(t); try{ localStorage.setItem('hcp.theme',t); }catch(e){} if(curView&&curView.draw) curView.draw(current); });
 
 /* Printable prescription: built into a hidden frame and sent to the browser print dialog */
-/* Saving state: the button keeps its width, shows a spinner, then the action runs */
-function busy(b,fn,ms=650){ b.style.width=b.offsetWidth+'px'; b.classList.add('is-busy'); b.disabled=true; b.setAttribute('aria-busy','true');
-  setTimeout(()=>{ b.classList.remove('is-busy'); b.disabled=false; b.removeAttribute('aria-busy'); b.style.width=''; fn(); },ms); }
-/* Primary actions in side panels (Send to Pharmacy, Book, Save, Approve…) go through the saving state first */
-const BUSY_SEL='#dFoot .btn-primary:not([data-go]):not(#hvDone):not([data-x="done"]):not([data-x="call"])';
-document.addEventListener('click',e=>{ const b=e.target.closest(BUSY_SEL); if(!b||b.dataset.pass||b.disabled) return;
-  e.preventDefault(); e.stopImmediatePropagation(); busy(b,()=>{ b.dataset.pass='1'; b.click(); delete b.dataset.pass; }); },true);
 /* confirmation dialog: sits above drawers, Esc or Cancel closes, focus starts on the confirm button */
 function confirmBox({title,text,ok='Confirm',onOk}){
   document.getElementById('cfm')?.remove();
@@ -165,7 +128,7 @@ function confirmBox({title,text,ok='Confirm',onOk}){
   w.innerHTML=`<div class="cfm" role="alertdialog" aria-modal="true" aria-labelledby="cfmT" aria-describedby="cfmX"><h3 id="cfmT">${title}</h3><p id="cfmX">${text}</p><div class="cfm-f"><button class="btn btn-secondary" data-c="no">Cancel</button><button class="btn btn-primary" data-c="yes">${ok}</button></div></div>`;
   const back=document.activeElement, close=()=>{ w.remove(); document.removeEventListener('keydown',key,true); back&&back.focus&&back.focus(); };
   const key=e=>{ if(e.key==='Escape'){ e.stopPropagation(); close(); } if(e.key==='Tab'){ const b=[...w.querySelectorAll('button')], i=b.indexOf(document.activeElement); e.preventDefault(); b[(i+(e.shiftKey?-1:1)+b.length)%b.length].focus(); } };
-  w.addEventListener('click',e=>{ const b=e.target.closest('[data-c]'); if(e.target===w||b&&b.dataset.c==='no') close(); else if(b&&!b.disabled){ busy(b,()=>{ close(); onOk&&onOk(); }); } });
+  w.addEventListener('click',e=>{ const b=e.target.closest('[data-c]'); if(e.target===w||b&&b.dataset.c==='no') close(); else if(b){ close(); onOk&&onOk(); } });
   document.addEventListener('keydown',key,true); document.body.appendChild(w); w.querySelector('[data-c="yes"]').focus();
 }
 function printRx(r){
